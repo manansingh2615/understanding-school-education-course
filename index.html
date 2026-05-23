@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Global School — Education Studies</title>
+  <meta name="description" content="A 110-day, 17-module graduate-level self-directed course on global school education — philosophy, history, cognitive science, and comparative systems.">
+  <meta name="theme-color" content="#1a1814">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">Loading&hellip;</div>
+
+<!-- ══════════════════════════════════════════
+     AUTH SCREEN
+══════════════════════════════════════════ -->
+<div class="auth-wrap hidden" id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">The Global School <span>&middot;</span> Education Studies</div>
+    <div id="auth-error" class="auth-error" role="alert"></div>
+
+    <!-- Login -->
+    <div id="form-login">
+      <div class="auth-title">Sign in</div>
+      <div class="auth-sub">Continue your 110-day education studies journey.</div>
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email</label>
+        <input class="form-input" type="email" id="login-email"
+               placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-pw">Password</label>
+        <input class="form-input" type="password" id="login-pw"
+               placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Sign in</button>
+      <div class="auth-switch">
+        New here? <a onclick="showForm('signup')">Create an account</a>
+      </div>
+    </div>
+
+    <!-- Signup -->
+    <div id="form-signup" class="hidden">
+      <div class="auth-title">Create account</div>
+      <div class="auth-sub">Join the course. Progress saves automatically.</div>
+      <div class="form-group">
+        <label class="form-label" for="signup-name">Your name</label>
+        <input class="form-input" type="text" id="signup-name"
+               placeholder="e.g. Priya Sharma" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signup-email">Email</label>
+        <input class="form-input" type="email" id="signup-email"
+               placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signup-pw">
+          Password <span class="hint">(minimum 6 characters)</span>
+        </label>
+        <input class="form-input" type="password" id="signup-pw"
+               placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="btn-primary" onclick="doSignup()">Create account</button>
+      <div class="auth-switch">
+        Already have an account? <a onclick="showForm('login')">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP SCREEN
+══════════════════════════════════════════ -->
+<div class="app-wrap hidden" id="app-screen">
+
+  <!-- Sidebar -->
+  <nav id="sidebar" aria-label="Course navigation">
+    <div class="sb-header">
+      <div class="sb-brand">The Global School</div>
+      <div class="sb-brand-sub">110 days &middot; 17 modules</div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-avatar" id="sb-avatar" aria-hidden="true">?</div>
+      <div class="sb-user-name" id="sb-username">&mdash;</div>
+      <button class="sb-logout" onclick="doLogout()">Sign out</button>
+    </div>
+    <div class="sb-progress-wrap">
+      <div class="sb-progress-bar">
+        <div class="sb-progress-fill" id="sb-prog-fill" style="width:0%"></div>
+      </div>
+      <div class="sb-progress-text" id="sb-prog-text">0 of 17 modules complete</div>
+    </div>
+    <div class="sb-nav" id="sb-nav" role="list"></div>
+    <div class="sb-bottom">
+      <button class="sb-admin-btn hidden" id="admin-btn" onclick="showView('admin')">
+        Admin dashboard
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main id="main">
+
+    <!-- Dashboard -->
+    <div class="view active" id="view-dashboard">
+      <div class="dashboard-wrap">
+        <div class="dash-greeting" id="dash-greeting">Welcome back.</div>
+        <div class="dash-sub">Pick up where you left off, or start a new module below.</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Modules complete</div>
+            <div class="stat-num" id="stat-done">0</div>
+            <div class="stat-den">of 17</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Days in</div>
+            <div class="stat-num" id="stat-days">0</div>
+            <div class="stat-den">of 110</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Quizzes passed</div>
+            <div class="stat-num" id="stat-quizzes">0</div>
+            <div class="stat-den">of 17</div>
+          </div>
+        </div>
+        <div class="section-label">All modules</div>
+        <div class="mod-list" id="dash-mod-list"></div>
+      </div>
+    </div>
+
+    <!-- Module view -->
+    <div class="view hidden" id="view-module">
+      <div class="module-wrap">
+        <button class="back-btn" onclick="showView('dashboard')">← Back to overview</button>
+        <div id="module-content"></div>
+      </div>
+    </div>
+
+    <!-- Quiz view -->
+    <div class="view hidden" id="view-quiz">
+      <div class="quiz-wrap">
+        <button class="back-btn" id="quiz-back-btn">← Back to module</button>
+        <div class="quiz-inner" id="quiz-content"></div>
+      </div>
+    </div>
+
+    <!-- Admin view -->
+    <div class="view hidden" id="view-admin">
+      <div class="admin-wrap">
+        <button class="back-btn" onclick="showView('dashboard')">← Back</button>
+        <div class="admin-title">Admin dashboard</div>
+        <div class="admin-sub">All enrolled users and their progress.</div>
+        <div class="section-label">Enrolled users</div>
+        <div class="admin-table-wrap">
+          <div id="admin-table-content"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Scripts — order matters -->
+<script src="db.js"></script>
+<script src="course-data.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
